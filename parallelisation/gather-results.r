@@ -63,7 +63,7 @@ for (c in othercomps)  # c='frank'
   }
 
 dir.create(allresfold, showWarnings=F)
-setwd(allresdir)
+setwd(allresfold)
 
 
 ## Merge intermediate and final results
@@ -93,7 +93,7 @@ cat(sprintf('\n%i rows done (%i duplicates) after merging intermediates and fina
 ### Save appended results
 res <- res[order(res[[rowidcol]]),]
 
-setwd(allresdir)
+setwd(allresfold)
 save(res, file='results_res.rdata')
 
 
