@@ -15,19 +15,16 @@ all-results/all-results.rdata: parallelisation/gather-results.r  .runallsims
 
 ## Run simulations
 .runallsims: parallelisation/run-all-sims.r   .compile   .preparesims
-	cd parallelisation; Rscript run-all-sims.r
-	touch .runallsims
+	cd parallelisation; Rscript run-all-sims.r  &&  touch .runallsims
 
 ## Prepare simulations; split between cores; 
 ## run "make preparsesims a=test" just for testing what's about to be run
 .preparesims: 
-	cd parallelisation; Rscript prepare-sims.r $(a)
-	touch .preparesims
+	cd parallelisation; Rscript prepare-sims.r $(a)  &&  touch .preparesims
 
 ## Byte compile R functions to go a bit faster
 .compile: functions.r  functions-model.r  parallelisation/compile-functions.r 
-	cd parallelisation; Rscript compile-functions.r
-	touch .compile
+	cd parallelisation; Rscript compile-functions.r  &&  touch .compile
 
 ## Park previous results (results, all-results)
 park:
