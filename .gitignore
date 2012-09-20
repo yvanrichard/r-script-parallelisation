@@ -1,0 +1,19 @@
+*.r~
+*~
+*autosave
+*swp
+*pdf
+*png
+*svg
+*rdata
+*RData
+*/#*
+.#*
+_*_.*
+*.dvi
+*.Rhistory
+*#
+*makefile0*
+*screenlog*
+* (copy)
+X.*

@@ -96,7 +96,7 @@ if (!test)
 
 dir.create('makefiles',showWarnings=F)
 
-system("git add .; git commit -m 'auto-commit'")
+system(sprintf("cd %s/%s; git add .; git commit -m 'auto-commit'; git push", basefold, projectname))
 
 ## Create makefiles and send them to the computers
 cp='robin'
