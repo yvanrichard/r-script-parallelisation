@@ -1,6 +1,6 @@
 ## Run makefiles on all computers specified in parallel-pars.r
 rm(list=ls())
-source('parallel-pars.r')
+source('../pars_parallel.r')
 load('cores_alloc.rdata')
 comps <- unique(cores_alloc$comp)
 
