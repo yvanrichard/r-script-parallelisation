@@ -2,7 +2,6 @@ rm(list=ls())
 
 library(compiler)
 
-source('pars_job.r')
 source('pars_parallel.r')
 
 loadcmp('parallelisation/functions_cmp.r')
