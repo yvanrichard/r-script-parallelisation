@@ -6,7 +6,6 @@ comps <- unique(cores_alloc$comp)
 comps <- comps[!(comps %in% thiscomp)]
 
 cp <- comps[1]
-
 for (cp in comps)
   {
     cat('*****', cp,'\n')

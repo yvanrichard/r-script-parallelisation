@@ -1,7 +1,7 @@
 all: all-results/all-results.rdata
 
 #  1: park previous results with "make park"
-#  2: specify computers and threads to use in parallelisation/parallel-pars.r
+#  2: specify computers and threads to use in parallel-pars.r
 #  3: split job among computers with "make preparesims"
 #  4: --- !!! COMMIT AND PUSH CHANGES !!! ---
 #  5: synchronise computers with "make gitsync"
@@ -15,30 +15,31 @@ all: all-results/all-results.rdata
 all-results/all-results.rdata: parallelisation/gather-results.r
 	cd parallelisation; Rscript gather-results.r
 
+## Run simulations
+runallsims: .compile   parallelisation/run-all-sims.r 
+	cd parallelisation; Rscript run-all-sims.r
 
-## Prepare simulations; split between cores
+## Prepare simulations; split between cores; 
+## run "make preparsesims a=test" just for testing what's about to be run
 preparesims: 
 	cd parallelisation; Rscript prepare-sims.r $(a)
 
-## Park previous results (results, all-results, and in dragonfly-results)
+## Park previous results (results, all-results)
 park:
 	cd parallelisation; Rscript park-prev.r
 
-## Do a git pull on dfly computers (as in parallel-pars.r)
+## Do a git pull on dfly computers (as in pars_parallel.r)
 gitsync:
 	cd parallelisation; Rscript gitsync.r
 
-## Run simulations, do "make sims a=test" just for testing what's about to be run
-runallsims:
-	cd parallelisation; Rscript run-all-sims.r
 
 
 
-## Kill screens on all dfly computers specified in parallel-pars.r
+## Kill screens on all dfly computers specified in pars_parallel.r
 killscreens:
 	cd parallelisation; Rscript kill-all-screens.r
 
-## Kill all R processes (of user) on all dfly computers specified in parallel-pars.r
+## Kill all R processes (of user) on all computers specified in pars_parallel.r
 killr:
 	cd parallelisation; Rscript kill-all-r.r
 
@@ -58,6 +59,6 @@ clean:
 cleantmp: 
 	rm *~
 
-.compile: functions.r  functions-model.r
+.compile: functions.r  functions-model.r  parallelisation/compile-functions.r 
 	cd parallelisation; Rscript compile-functions.r
 	touch .compile

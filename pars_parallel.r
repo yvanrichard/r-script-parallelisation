@@ -14,6 +14,8 @@ datafile <- 'data.rdata'
 dataname <- 'data'  # name of data frame
 rowidcol <- 'id'
 
+saveevery <- 10
+
 ##  For makefiles
 basefold <- '~/dragonfly'
 projectname <- 'r-script-parallelisation'
