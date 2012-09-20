@@ -1,17 +1,15 @@
 ###  Fetch results from all computers  ###
 ##########################################
 
-rm(list=ls())
 library(compiler)
 
-basefold <- '~/dragonfly/sra-foundations/modelling/bh-dd-k50/'
-setwd(basefold)
-
-source('parallel-pars.r')
+source('../pars_parallel.r')
 ## source('functions.r')
 loadcmp('functions_cmp.r')
 
-load(datafile)
+load(sprintf('../%s', datafile))
+data <- eval(parse(text=dataname))
+if (dataname != 'data') {rm(dataname); gc()}
 
 load('cores_alloc.rdata')
 othercomps <- unique(cores_alloc$comp[!(cores_alloc$comp %in% thiscomp)])
@@ -19,7 +17,7 @@ othercomps <- unique(cores_alloc$comp[!(cores_alloc$comp %in% thiscomp)])
 c=othercomps[1]
 for (c in othercomps)
   {
-    fold <- sprintf('%s-%s', outputfold, c)
+    fold <- sprintf('../%s-%s', outputfold, c)
     dir.create(fold, showWarnings=F)
     ## Mount results from other computers
     if (!length(dir(fold)))
@@ -35,26 +33,26 @@ folds <- c(outputfold, sprintf('%s-%s', outputfold, othercomps))
 for (d in folds)  # d='results-taiko'    # d='results'
   {
     cat('\nMerging files in', d, '...\n')
-    setwd(sprintf('%s%s', basefold, d))
+    setwd(sprintf('%s/%s/%s/%s', basefold, projectname, runfold, d))
     
-    inter <- dir(pattern='.*pars1-steps.*..rdata')
-    fin <- dir(patter='.*pars-steps.*..rdata')
+    inter <- dir(pattern='.*incomplete.*..rdata')
+    fin <- dir(patter='.*finished.*..rdata')
 
     for (f in inter)                    # f=inter[1]
       {
         load(f)
-        resi <- rbind2(resi, pars1)
+        resi <- rbind2(resi, data1)
       }
 
     for (f in fin)                      # f=fin[2]
       {
         load(f)
-        resf <- rbind2(resf, pars)
+        resf <- rbind2(resf, data)
       }
   }
 
 
-setwd(basefold)
+setwd(sprintf('%s/%s/%s', basefold, projectname, runfold))
 
 ## Unmount other computers
 for (c in othercomps)  # c='frank'
@@ -64,21 +62,20 @@ for (c in othercomps)  # c='frank'
     unlink(fold, recursive=T)
   }
 
-allresdir <- sprintf('%sall-results', basefold)
-dir.create(allresdir, showWarnings=F)
+dir.create(allresfold, showWarnings=F)
 setwd(allresdir)
 
 
 ## Merge intermediate and final results
-resi2 <- resi[!(resi$row %in% resf$row),]  # remove finished rows from intermediate results
+resi2 <- resi[!(resi[[rowidcol]] %in% resf[[rowidcol]]),]  # remove finished rows from intermediate results
 res <- rbind(resi2, resf)                  
 
-res <- res[order(res$row),]
+res <- res[order(res[[rowidcol]]),]
 
 
 
 ## Check missing rows and summarise
-missingrows <- dem$row[!(dem$row %in% res$row)]
+missingrows <- data[[rowidcol]][!(data[[rowidcol]] %in% res[[rowidcol]])]
 if (length(missingrows))
   {
     mr <- as.numeric(missingrows)
@@ -90,17 +87,11 @@ if (length(missingrows))
   }
 
 cat(sprintf('\n%i rows done (%i duplicates) after merging intermediates and final results.
-   Details:', nrow(res), sum(duplicated(res$row))),'\n')
-print(table(res$species))
-
-if ('pbr0' %in% names(res))
-  cat(sprintf('\n%i PBR values (%0.1f%%) already calculated.\n', sum(!is.na(res$pbr0)),
-      100*sum(!is.na(res$pbr0))/nrow(res))) else
-         cat('\nNo PBR values already calculated.\n')
+   Details:', nrow(res), sum(duplicated(res[[rowidcol]]))),'\n')
 
 
 ### Save appended results
-res <- res[order(res$row),]
+res <- res[order(res[[rowidcol]]),]
 
 setwd(allresdir)
 save(res, file='results_res.rdata')

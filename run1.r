@@ -8,7 +8,7 @@ source('pars_parallel.r')
 loadcmp('parallelisation/functions_cmp.r')
 loadcmp('parallelisation/functions-model_cmp.r')
 
-load('data.rdata')
+load(datafile)
 data <- eval(parse(text=dataname))
 if (dataname != 'data') {rm(dataname); gc()}
 
