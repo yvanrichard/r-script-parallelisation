@@ -86,14 +86,13 @@ if (length(missingrows))
     save(df, file='missing-rows_df.rdata')
   }
 
-cat(sprintf('\n%i rows done (%i duplicates) after merging intermediates and final results.
-   Details:', nrow(res), sum(duplicated(res[[rowidcol]]))),'\n')
+cat(sprintf('\n%i rows done (%i duplicates) after merging intermediates and final results.',
+            nrow(res), sum(duplicated(res[[rowidcol]]))),'\n')
 
 
 ### Save appended results
 res <- res[order(res[[rowidcol]]),]
 
-setwd(allresfold)
 save(res, file='results_res.rdata')
 
 
